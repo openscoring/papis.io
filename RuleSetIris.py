@@ -2,7 +2,13 @@ from sklearn2pmml import sklearn2pmml
 from sklearn2pmml.pipeline import PMMLPipeline
 from sklearn2pmml.ruleset import RuleSetClassifier
 
-from Iris import iris_X, iris_y
+import pandas
+
+iris_df = pandas.read_csv("csv/Iris.csv")
+#print(iris_df.head(5))
+
+iris_X = iris_df[iris_df.columns.difference(["Species"])]
+iris_y = iris_df["Species"]
 
 classifier = RuleSetClassifier([
 	("X['Petal_Length'] < 2.45", "setosa"),
