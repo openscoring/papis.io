@@ -1,5 +1,6 @@
 from h2o import H2OFrame
 from h2o.estimators.random_forest import H2ORandomForestEstimator
+from sklearn.pipeline import Pipeline
 from sklearn_pandas import DataFrameMapper
 from sklearn2pmml import sklearn2pmml
 from sklearn2pmml.decoration import Alias, CategoricalDomain, ContinuousDomain
@@ -26,11 +27,16 @@ mapper = DataFrameMapper([
 ])
 classifier = H2ORandomForestEstimator(ntrees = 17)
 
+predict_proba_transformer = Pipeline([
+	("expression", ExpressionTransformer("X[1]")),
+	("cut", Alias(CutTransformer(bins = [0.0, 0.75, 0.90, 1.0], labels = ["no", "maybe", "yes"]), "Decision", prefit = True))
+])
+
 pipeline = PMMLPipeline([
 	("mapper", mapper),
 	("uploader", H2OFrameCreator()),
 	("classifier", classifier)
-])
+], predict_proba_transformer = predict_proba_transformer)
 pipeline.fit(audit_X, H2OFrame(audit_y.to_frame(), column_types = ["categorical"]))
 
 pipeline.verify(audit_X.sample(100))
