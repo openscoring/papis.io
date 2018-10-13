@@ -3,7 +3,9 @@ import scala.collection.mutable.ListBuffer
 
 import org.apache.spark.ml.{Pipeline, PipelineStage}
 import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature._
+import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
 import org.jpmml.sparkml.PMMLBuilder
 
 val df = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("csv/Audit.csv")
@@ -20,7 +22,7 @@ for(contCol <- Seq("Hours", "Income")){
 }
 
 for(catCol <- Seq("Education", "Employment", "Gender", "Marital", "Occupation")){
-	stages += new StringIndexer().setInputCol(catCol).setOutputCol("indexed" + catCol)
+	stages += new StringIndexer().setHandleInvalid("keep").setInputCol(catCol).setOutputCol("indexed" + catCol)
 	stages += new OneHotEncoder().setInputCol("indexed" + catCol).setOutputCol("encoded" + catCol)
 	featureCols += ("encoded" + catCol)
 }
@@ -33,9 +35,17 @@ featureCols += "interactedGenderMarital"
 
 stages += new VectorAssembler().setInputCols(featureCols.toArray).setOutputCol("vectorizedFeatures")
 
-stages += new LogisticRegression().setRegParam(0.1).setElasticNetParam(0.5).setFeaturesCol("vectorizedFeatures").setLabelCol("indexedAdjusted")
+val logisticRegression = new LogisticRegression().setElasticNetParam(0.5).setFeaturesCol("vectorizedFeatures").setLabelCol("indexedAdjusted")
 
-val pipeline = new Pipeline().setStages(stages.toArray)
+stages += logisticRegression
+
+val estimator = new Pipeline().setStages(stages.toArray)
+val estimatorParamMaps = new ParamGridBuilder().addGrid(logisticRegression.regParam, Array(0.05, 0.10)).build()
+val evaluator = new BinaryClassificationEvaluator().setLabelCol("indexedAdjusted")
+
+val cv = new CrossValidator().setEstimator(estimator).setEstimatorParamMaps(estimatorParamMaps).setEvaluator(evaluator).setNumFolds(2).setParallelism(4).setSeed(42L)
+
+val pipeline = new Pipeline().setStages(Array(cv))
 val pipelineModel = pipeline.fit(df)
 
 val pmmlBuilder = new PMMLBuilder(df.schema, pipelineModel).verify(df.sample(false, 0.05))
