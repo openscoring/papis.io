@@ -13,7 +13,7 @@ simple_mapper = DataFrameMapper([
 	("Employment", [CategoricalDomain(), LabelBinarizer()]),
 	("Marital", [CategoricalDomain(), LabelBinarizer()]),
 	("Occupation", [CategoricalDomain(), LabelBinarizer()]),
-	("Age", [ContinuousDomain(), CutTransformer(bins = [0, 18, 65, 100], labels = ["minor", "adult", "senior"]), LabelBinarizer()]),
+	("Age", [ContinuousDomain(), CutTransformer(bins = [17, 28, 37, 47, 83], labels = ["q1", "q2", "q3", "q4"]), LabelBinarizer()]),
 	("Hours", ContinuousDomain()),
 	("Income", ContinuousDomain()),
 	(["Hours", "Income"], Alias(ExpressionTransformer("X[1] / (X[0] * 52)"), "Hourly Income"))
