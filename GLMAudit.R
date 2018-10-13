@@ -5,7 +5,7 @@ audit$Adjusted = as.factor(audit$Adjusted)
 
 ageQuantiles = quantile(audit$Age)
 
-glm = glm(Adjusted ~ . - Age + cut(Age, breaks = ageQuantiles) + Gender:Education + I(Income / (Hours * 52)), data = audit, family = "binomial")
+glm = glm(Adjusted ~ . - Age + cut(Age, breaks = ageQuantiles) + Gender:Marital + I(Income / (Hours * 52)), data = audit, family = "binomial")
 
 audit$Adjusted = NULL
 

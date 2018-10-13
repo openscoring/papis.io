@@ -10,8 +10,8 @@ from xgboost import XGBClassifier
 from Audit import audit_X, audit_y
 
 simple_mapper = DataFrameMapper([
+	("Education", [CategoricalDomain(), LabelBinarizer()]),
 	("Employment", [CategoricalDomain(), LabelBinarizer()]),
-	("Marital", [CategoricalDomain(), LabelBinarizer()]),
 	("Occupation", [CategoricalDomain(), LabelBinarizer()]),
 	("Age", [ContinuousDomain(), CutTransformer(bins = [17, 28, 37, 47, 83], labels = ["q1", "q2", "q3", "q4"]), LabelBinarizer()]),
 	("Hours", ContinuousDomain()),
@@ -19,8 +19,8 @@ simple_mapper = DataFrameMapper([
 	(["Hours", "Income"], Alias(ExpressionTransformer("X[1] / (X[0] * 52)"), "Hourly Income"))
 ])
 interaction_mapper = DataFrameMapper([
-	("Education", [CategoricalDomain(), LabelBinarizer()]),
 	("Gender", [CategoricalDomain(), LabelBinarizer()]),
+	("Marital", [CategoricalDomain(), LabelBinarizer()])
 ])
 classifier = XGBClassifier()
 
