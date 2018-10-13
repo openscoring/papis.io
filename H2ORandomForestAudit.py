@@ -23,7 +23,7 @@ mapper = DataFrameMapper([
 	("Age", [ContinuousDomain(), CutTransformer(bins = [17, 28, 37, 47, 83], labels = ["q1", "q2", "q3", "q4"])]),
 	("Hours", ContinuousDomain()),
 	("Income", ContinuousDomain()),
-	(["Hours", "Income"], Alias(ExpressionTransformer("X[1] / (X[0] * 52)"), "Hourly Income"))
+	(["Hours", "Income"], Alias(ExpressionTransformer("X[1] / (X[0] * 52)"), "Hourly_Income"))
 ])
 classifier = H2ORandomForestEstimator(ntrees = 17)
 
