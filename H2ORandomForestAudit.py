@@ -18,7 +18,7 @@ audit_df = pandas.read_csv("csv/Audit.csv")
 audit_X = audit_df[audit_df.columns.difference(["Adjusted"])]
 audit_y = audit_df["Adjusted"]
 
-h2o.connect()
+h2o.init()
 
 mapper = DataFrameMapper([
 	("Education", CategoricalDomain()),
