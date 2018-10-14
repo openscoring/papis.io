@@ -8,16 +8,15 @@ from sklearn2pmml.pipeline import PMMLPipeline
 from sklearn2pmml.preprocessing import CutTransformer, ExpressionTransformer
 from sklearn2pmml.preprocessing.h2o import H2OFrameCreator
 
-import sys
+import h2o
 import pandas
+import sys
 
 audit_df = pandas.read_csv("csv/Audit.csv")
 #print(audit_df.head(5))
 
 audit_X = audit_df[audit_df.columns.difference(["Adjusted"])]
 audit_y = audit_df["Adjusted"]
-
-import h2o
 
 h2o.connect()
 

@@ -7,8 +7,8 @@ from sklearn2pmml.pipeline import PMMLPipeline
 from sklearn2pmml.preprocessing import CutTransformer, ExpressionTransformer
 from xgboost import XGBClassifier
 
-import sys
 import pandas
+import sys
 
 audit_df = pandas.read_csv("csv/Audit.csv")
 #print(audit_df.head(5))
