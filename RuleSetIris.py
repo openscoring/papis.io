@@ -3,6 +3,7 @@ from sklearn2pmml.pipeline import PMMLPipeline
 from sklearn2pmml.ruleset import RuleSetClassifier
 
 import pandas
+import sys
 
 iris_df = pandas.read_csv("csv/Iris.csv")
 #print(iris_df.head(5))
@@ -21,3 +22,9 @@ pipeline = PMMLPipeline([
 pipeline.fit(iris_X, iris_y)
 
 sklearn2pmml(pipeline, "pmml/RuleSetIris.pmml")
+
+if "--deploy" in sys.argv:
+	from openscoring import Openscoring
+
+	os = Openscoring("http://localhost:8080/openscoring")
+	os.deployFile("RuleSetIris", "pmml/RuleSetIris.pmml")

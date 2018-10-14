@@ -8,6 +8,7 @@ from sklearn2pmml.pipeline import PMMLPipeline
 from sklearn2pmml.preprocessing import CutTransformer, ExpressionTransformer
 from sklearn2pmml.preprocessing.h2o import H2OFrameCreator
 
+import sys
 import pandas
 
 audit_df = pandas.read_csv("csv/Audit.csv")
@@ -48,3 +49,9 @@ pipeline.fit(audit_X, H2OFrame(audit_y.to_frame(), column_types = ["categorical"
 pipeline.verify(audit_X.sample(100))
 
 sklearn2pmml(pipeline, "pmml/H2ORandomForestAudit.pmml")
+
+if "--deploy" in sys.argv:
+	from openscoring import Openscoring
+
+	os = Openscoring("http://localhost:8080/openscoring")
+	os.deployFile("H2ORandomForestAudit", "pmml/H2ORandomForestAudit.pmml")

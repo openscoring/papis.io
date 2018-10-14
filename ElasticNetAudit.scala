@@ -1,3 +1,5 @@
+val args = sc.getConf.get("spark.driver.args")
+
 import java.io.File
 import scala.collection.mutable.ListBuffer
 
@@ -51,5 +53,14 @@ val pipelineModel = pipeline.fit(df)
 val pmmlBuilder = new PMMLBuilder(df.schema, pipelineModel).verify(df.sample(false, 0.05))
 
 pmmlBuilder.buildFile(new File("pmml/ElasticNetAudit.pmml"))
+
+if(args.contains("--deploy")){
+	import org.openscoring.client.Deployer
+
+	val deployer = new Deployer()
+	deployer.setModel("http://localhost:8080/openscoring/model/ElasticNetAudit")
+	deployer.setFile(new File("pmml/ElasticNetAudit.pmml"))
+	deployer.run()
+}
 
 System.exit(0)

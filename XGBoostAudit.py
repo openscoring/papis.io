@@ -7,6 +7,7 @@ from sklearn2pmml.pipeline import PMMLPipeline
 from sklearn2pmml.preprocessing import CutTransformer, ExpressionTransformer
 from xgboost import XGBClassifier
 
+import sys
 import pandas
 
 audit_df = pandas.read_csv("csv/Audit.csv")
@@ -46,3 +47,9 @@ pipeline.configure(compact = True)
 pipeline.verify(audit_X.sample(100), zeroThreshold = 1e-6, precision = 1e-6)
 
 sklearn2pmml(pipeline, "pmml/XGBoostAudit.pmml")
+
+if "--deploy" in sys.argv:
+	from openscoring import Openscoring
+
+	os = Openscoring("http://localhost:8080/openscoring")
+	os.deployFile("XGBoostAudit", "pmml/XGBoostAudit.pmml")
