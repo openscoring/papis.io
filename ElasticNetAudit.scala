@@ -1,14 +1,20 @@
-val args = sc.getConf.get("spark.driver.args")
-
 import java.io.File
-import scala.collection.mutable.ListBuffer
-
+import java.util.NoSuchElementException
 import org.apache.spark.ml.{Pipeline, PipelineStage}
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature._
 import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
 import org.jpmml.sparkml.PMMLBuilder
+import scala.collection.mutable.ListBuffer
+
+var args = ""
+
+try {
+	args = sc.getConf.get("spark.driver.args")
+} catch {
+	case nsee: NoSuchElementException => ;
+}
 
 val df = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("csv/Audit.csv")
 
@@ -55,12 +61,18 @@ val pmmlBuilder = new PMMLBuilder(df.schema, pipelineModel).verify(df.sample(fal
 pmmlBuilder.buildFile(new File("pmml/ElasticNetAudit.pmml"))
 
 if(args.contains("--deploy")){
+	import javax.ws.rs.ProcessingException
 	import org.openscoring.client.Deployer
 
 	val deployer = new Deployer()
 	deployer.setModel("http://localhost:8080/openscoring/model/ElasticNetAudit")
 	deployer.setFile(new File("pmml/ElasticNetAudit.pmml"))
-	deployer.run()
+
+	try {
+		deployer.run()
+	} catch {
+		case pe: ProcessingException => ;
+	}
 }
 
 System.exit(0)
