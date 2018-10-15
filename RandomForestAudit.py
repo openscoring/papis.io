@@ -39,18 +39,18 @@ predict_proba_transformer = Pipeline([
 ])
 
 pipeline = PMMLPipeline([
-	("mapper", mapper),
+	("local_mapper", mapper),
 	("uploader", H2OFrameCreator()),
-	("classifier", classifier)
+	("remote_classifier", classifier)
 ], predict_proba_transformer = predict_proba_transformer)
 pipeline.fit(audit_X, H2OFrame(audit_y.to_frame(), column_types = ["categorical"]))
 
 pipeline.verify(audit_X.sample(100))
 
-sklearn2pmml(pipeline, "pmml/H2ORandomForestAudit.pmml")
+sklearn2pmml(pipeline, "pmml/RandomForestAudit.pmml")
 
 if "--deploy" in sys.argv:
 	from openscoring import Openscoring
 
 	os = Openscoring("http://localhost:8080/openscoring")
-	os.deployFile("H2ORandomForestAudit", "pmml/H2ORandomForestAudit.pmml")
+	os.deployFile("RandomForestAudit", "pmml/RandomForestAudit.pmml")

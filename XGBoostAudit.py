@@ -16,7 +16,7 @@ audit_df = pandas.read_csv("csv/Audit.csv")
 audit_X = audit_df[audit_df.columns.difference(["Adjusted"])]
 audit_y = audit_df["Adjusted"]
 
-simple_mapper = DataFrameMapper([
+scalar_mapper = DataFrameMapper([
 	("Education", [CategoricalDomain(), LabelBinarizer()]),
 	("Employment", [CategoricalDomain(), LabelBinarizer()]),
 	("Occupation", [CategoricalDomain(), LabelBinarizer()]),
@@ -33,7 +33,7 @@ classifier = XGBClassifier()
 
 pipeline = PMMLPipeline([
 	("mapper", FeatureUnion([
-		("simple_mapper", simple_mapper),
+		("scalar_mapper", scalar_mapper),
 		("interaction", Pipeline([
 			("interaction_mapper", interaction_mapper),
 			("polynomial", PolynomialFeatures())
