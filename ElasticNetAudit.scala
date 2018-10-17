@@ -21,6 +21,7 @@ val df = spark.read.format("csv").option("header", "true").option("inferSchema",
 val stages = new ListBuffer[PipelineStage]()
 val featureCols = new ListBuffer[String]()
 
+// stages += new SQLTransformer().setStatement("SELECT *, (Income / (Hours * 52)) AS Hourly_Income FROM __THIS__")
 stages += new SQLTransformer().setStatement("SELECT * FROM __THIS__")
 
 stages += new StringIndexer().setInputCol("Adjusted").setOutputCol("indexedAdjusted")

@@ -1,3 +1,4 @@
+from sklearn.feature_selection import chi2, SelectKBest
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import LabelBinarizer, PolynomialFeatures
 from sklearn_pandas import DataFrameMapper
@@ -17,9 +18,9 @@ audit_X = audit_df[audit_df.columns.difference(["Adjusted"])]
 audit_y = audit_df["Adjusted"]
 
 scalar_mapper = DataFrameMapper([
-	("Education", [CategoricalDomain(), LabelBinarizer()]),
-	("Employment", [CategoricalDomain(), LabelBinarizer()]),
-	("Occupation", [CategoricalDomain(), LabelBinarizer()]),
+	("Education", [CategoricalDomain(), LabelBinarizer(), SelectKBest(chi2, k = 3)]),
+	("Employment", [CategoricalDomain(), LabelBinarizer(), SelectKBest(chi2, k = 3)]),
+	("Occupation", [CategoricalDomain(), LabelBinarizer(), SelectKBest(chi2, k = 3)]),
 	("Age", [ContinuousDomain(), CutTransformer(bins = [17, 28, 37, 47, 83], labels = ["q1", "q2", "q3", "q4"]), LabelBinarizer()]),
 	("Hours", ContinuousDomain()),
 	("Income", ContinuousDomain()),
