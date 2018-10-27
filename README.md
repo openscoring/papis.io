@@ -440,7 +440,7 @@ The generated PMML document is saved as `pmml/RandomForestAudit.pmml` and deploy
 
 ### Regularized (Elastic net) Logistic Regression in Apache Spark
 
-The Scala script file: [ElasticNetAudit.py](ElasticNetAudit.py)
+The Scala script file: [ElasticNetAudit.scala](ElasticNetAudit.scala)
 
 Apache Spark pipelines are much more flexible than Scikit-Learn pipelines. Specifically, they support model chains, transformations between models and after the last model. The JPMML-SparkML library should be able to convert all that into the standardized PMML representation in a fully automated way.
 
