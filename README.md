@@ -36,7 +36,7 @@ The field of data science is split between two paradigms:
 | Workflows | Manual, intelligent | Automated, brute-force |
 | Hardware | Commodity (CPU) | Specialized (GPU, TPU) |
 | Results | Explainable | "Black-box" |
-| Standards | [PMML](http://dmg.org/) | [ONNX](https://onnx.ai/), [TensorFlow](https://www.tensorflow.org/) |
+| Standards | [PMML](https://dmg.org/) | [ONNX](https://onnx.ai/), [TensorFlow](https://www.tensorflow.org/) |
 
 The domain of structured data science is based on a solid foundation (statistics), and is responsible for delivering the majority of business value today and in the foreseeable future.
 
@@ -45,7 +45,7 @@ Everything about data science is a lucrative and fast-growing market for softwar
 Dominant FOSS ML frameworks:
 
 * [R](https://www.r-project.org/)
-* [Scikit-Learn](http://scikit-learn.org/stable/)
+* [Scikit-Learn](https://scikit-learn.org/stable/)
 * [Apache Spark](https://spark.apache.org/)
 
 On top of frameworks, there are a number of independent FOSS ML algorithm:
@@ -113,14 +113,6 @@ The `sklearn2pmml` package is "softly dependent" on `h2o`, `lightgbm` and `xgboo
 $ pip install h2o xgboost
 ```
 
-The layout of H2O.ai's MOJO files is version-dependent. The [JPMML-H2O](https://github.com/jpmml/jpmml-h2o) library, which handles the conversion of H2O.ai's MOJO files, works correctly with H2O.ai 3.16.X and 3.18.X versions; it may, or may not, work correctly with older/newer H2O.ai versions.
-
-Installing the latest definitely supported `h2o` package version:
-
-```
-$ pip install -Iv h2o==3.18.0.11
-```
-
 The conversion functionality is available via the `sklearn2pmml.sklearn2pmml(pmml_pipeline, pmml_path)` function:
 
 ```Python
@@ -147,7 +139,8 @@ The JPMML-SparkML library is being developed and released in four parallel versi
 | [1.1.X](https://github.com/jpmml/jpmml-sparkml/tree/1.1.X) | 2.0.X |
 | [1.2.X](https://github.com/jpmml/jpmml-sparkml/tree/1.2.X) | 2.1.X |
 | [1.3.X](https://github.com/jpmml/jpmml-sparkml/tree/1.3.X) | 2.2.X |
-| [1.4.X](https://github.com/jpmml/jpmml-sparkml/tree/master) | 2.3.X |
+| [1.4.X](https://github.com/jpmml/jpmml-sparkml/tree/1.4.X) | 2.3.X |
+| [1.5.X](https://github.com/jpmml/jpmml-sparkml/tree/master) | 2.4.X |
 
 For example, if targeting Apache Spark 2.3.X, then the end user should download the latest JPMML-SparkML 1.4.X version (1.4.6 at the time of PAPIs.io 2018).
 
