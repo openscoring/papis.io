@@ -5,6 +5,7 @@ import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature._
 import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
+import org.apache.spark.sql.types.DoubleType
 import org.jpmml.sparkml.PMMLBuilder
 import scala.collection.mutable.ListBuffer
 
@@ -16,17 +17,18 @@ try {
 	case nsee: NoSuchElementException => ;
 }
 
-val df = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("csv/Audit.csv")
+var df = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("csv/Audit.csv")
+
+df = df.withColumn("Hours", $"Hours".cast(DoubleType))
 
 val stages = new ListBuffer[PipelineStage]()
 val featureCols = new ListBuffer[String]()
 
-// stages += new SQLTransformer().setStatement("SELECT *, (Income / (Hours * 52)) AS Hourly_Income FROM __THIS__")
-stages += new SQLTransformer().setStatement("SELECT * FROM __THIS__")
+stages += new SQLTransformer().setStatement("SELECT *, (Income / (Hours * 52)) AS Hourly_Income FROM __THIS__")
 
 stages += new StringIndexer().setInputCol("Adjusted").setOutputCol("indexedAdjusted")
 
-for(contCol <- Seq("Hours", "Income")){
+for(contCol <- Seq("Hourly_Income")){
 	featureCols += contCol
 }
 
